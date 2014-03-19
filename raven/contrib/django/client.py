@@ -9,6 +9,7 @@ raven.contrib.django.client
 from __future__ import absolute_import
 
 import logging
+import sys
 
 from django.conf import settings
 from django.core.exceptions import SuspiciousOperation
@@ -146,6 +147,9 @@ class DjangoClient(Client):
             data.update(self.get_data_from_request(request))
 
         if kwargs.get('exc_info'):
+            # Handle exc_info=True.
+            if kwargs.get('exc_info') is True:
+                kwargs['exc_info'] = sys.exc_info()
             exc_value = kwargs['exc_info'][1]
             # As of r16833 (Django) all exceptions may contain a ``django_template_source`` attribute (rather than the
             # legacy ``TemplateSyntaxError.source`` check) which describes template information.
